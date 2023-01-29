@@ -1,24 +1,18 @@
 <?php
 
+// $this 는 new class 선언한 instance 대상
+// self 는 class 대상
 class Router 
 {
-    protected $routes = [];
-    public function path($method, $uri, $handler) 
+    static $routes = [];
+    static function path($method, $uri, $handler) 
     {
         $uri = preg_replace('#\{(.*?)\}#', '([^\/]+)', $uri);
-        $this->routes[] = [$method, "#^$uri$#", $handler];   
+        self::$routes[] = [$method, "#^$uri$#", $handler];   
+
     }
 
-    public function get($uri, $handler) 
-    {
-        $this::path("GET",$uri,$handler);
-    }
-    public function post($uri, $handler) 
-    {
-        $this::path("POST",$uri,$handler);
-    }
-
-    public function handleRequest() 
+    static function handleRequest() 
     {
         
         $REQUEST_METHOD = $_SERVER['REQUEST_METHOD'];
@@ -26,7 +20,7 @@ class Router
         
         
         
-        foreach ($this->routes as $route) 
+        foreach (self::$routes as $route) 
         {
             [$method, $uri, $handler] = $route;
             if ($method !== $REQUEST_METHOD) continue;
@@ -41,3 +35,10 @@ class Router
     }
 }
 
+
+function GET($uri,$handler){
+    Router::path('GET',$uri,$handler);
+}
+function POST($uri,$handler){
+    Router::path('POST',$uri,$handler);
+}
