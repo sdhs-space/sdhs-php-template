@@ -7,6 +7,7 @@ class Router
     static $routes = [];
     static function path($method, $uri, $handler) 
     {
+        // 숫자 외 ID 같은 요소도 들어갈 수도 있음
         $uri = preg_replace('#\{(.*?)\}#', '([^\/]+)', $uri);
         self::$routes[] = [$method, "#^$uri$#", $handler];   
 
